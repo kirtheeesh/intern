@@ -43,9 +43,11 @@ app.use("/api", router);
 const frontendDist = path.resolve(process.cwd(), "../frontend/dist");
 if (fs.existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
-  app.get("(.*)", (req, res) => {
-    if (!req.path.startsWith("/api")) {
+  app.use((req, res) => {
+    if (req.method === "GET" && !req.path.startsWith("/api")) {
       res.sendFile(path.join(frontendDist, "index.html"));
+    } else {
+      res.status(404).json({ error: "Not found" });
     }
   });
 }
