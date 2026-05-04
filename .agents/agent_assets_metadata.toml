@@ -1,0 +1,14 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "4Dgh7Jn6P_HosfBoKLxwp"
+uri = "file://artifacts/aimstorm/public/images/hero-bg.png"
+type = "image"
+title = "Hero background image"
+
+[[generated]]
+id = "9na9Df1KgzjOtAbALa46g"
+uri = "file://artifacts/aimstorm/public/images/about-image.png"
+type = "image"
+title = "About section image"

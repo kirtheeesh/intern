@@ -1,6 +1,8 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import cookieParser from "cookie-parser";
+import path from "path";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -25,9 +27,14 @@ app.use(
     },
   }),
 );
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Serve uploaded files
+const uploadsDir = path.resolve(process.cwd(), "uploads");
+app.use("/api/uploads", express.static(uploadsDir));
 
 app.use("/api", router);
 

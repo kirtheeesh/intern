@@ -1,0 +1,428 @@
+Use this exact prompt for Zencoder. It asks for a complete internship registration web app with landing page, form, admin panel, call action, export, and the login credentials you specified. Google Forms file uploads normally require users to sign in with a Google account, so asking Zencoder for a custom form flow with uploads and admin storage is the safer direction if you want a smoother user experience.
+
+Zencoder prompt
+Create a modern, attractive, mobile-first web application for Aimstorm Internship Registration – 15 Days Business Bootcamp.
+
+The app must include:
+
+A polished landing page.
+
+A full registration form.
+
+An admin panel login.
+
+A registrations dashboard.
+
+Click-to-call support using a phone icon.
+
+Export functionality for all registrations.
+
+White and #C40233 as the main brand colors.
+
+Build it as a clean, professional internship application platform with strong UX, smooth animations, and excellent mobile responsiveness. Keep the design premium, simple, and conversion-focused. Use semantic HTML, proper validation, and a polished UI.
+
+Brand style
+Primary colors: white and #C40233
+
+Look and feel: modern, business-focused, trustworthy, premium, clean
+
+Use bold headings, elegant cards, subtle shadows, and smooth hover effects
+
+Keep the layout uncluttered and easy to scan
+
+Use responsive design for mobile, tablet, and desktop
+
+Main pages and features
+1. Landing page
+Create a landing page with these sections:
+
+Hero section
+Title: Aimstorm Internship – 15 Days Business Bootcamp
+
+Subtitle: Learn real business skills, build your own idea, and get certified.
+
+Primary button: Apply Now
+
+Secondary button: View Program
+
+Add a strong visual layout with business/internship/startup vibe
+
+CTA buttons should scroll to the registration form
+
+About section
+Text:
+
+Aimstorm is a practical internship designed to teach real-world business skills like marketing, sales, finance, and entrepreneurship.
+
+You will not just learn—you will build and present a real business idea.
+
+What You Will Learn
+Show attractive cards for:
+
+Business fundamentals
+
+Startup idea validation
+
+Marketing & branding
+
+Sales & customer psychology
+
+Finance & pricing
+
+Business tools & operations
+
+Program Timeline
+Display as timeline cards:
+
+Day 1–3: Basics
+
+Day 4–6: Marketing & Sales
+
+Day 7–10: Operations & HR
+
+Day 11–13: Tools & Branding
+
+Day 14: Project
+
+Day 15: Presentation + Certificate
+
+Benefits section
+Internship Certificate
+
+Real project experience
+
+Startup mindset
+
+Practical knowledge
+
+Final CTA
+Text: Seats are limited. Apply now and start your business journey.
+
+Button: Apply Now
+
+2. Registration form
+Create a complete registration form using these exact fields.
+
+Form title
+Aimstorm Internship Registration – 15 Days Business Bootcamp
+
+Form description
+Register for the Aimstorm Business Bootcamp Internship. Complete all required fields. Certificate will be provided after successful completion.
+
+Personal Information
+Full Name (short answer, required)
+
+Date of Birth (date, required)
+
+Gender (multiple choice)
+
+Male
+
+Female
+
+Other
+
+Mobile Number (short answer, required)
+
+Email ID (short answer, required)
+
+Address (paragraph)
+
+Educational Background
+College / Institution (short answer)
+
+Degree (multiple choice)
+
+BBA
+
+B.Com
+
+MBA
+
+Other
+
+Department (short answer)
+
+Year of Study (multiple choice)
+
+1st
+
+2nd
+
+3rd
+
+Final
+
+University (short answer)
+
+Internship Preferences
+Why do you want to join this bootcamp? (paragraph, required)
+
+Area of Interest (checkboxes)
+
+Entrepreneurship
+
+Marketing
+
+Finance
+
+Sales
+
+Business Strategy
+
+Interested in starting a business? (multiple choice)
+
+Yes
+
+No
+
+Maybe
+
+Skills & Knowledge
+Current Skills (paragraph)
+
+Business Knowledge Level (multiple choice)
+
+Beginner
+
+Intermediate
+
+Advanced
+
+Availability
+Can you attend all 15 days? (multiple choice, required)
+
+Yes
+
+No
+
+Preferred Time Slot (multiple choice)
+
+Morning
+
+Afternoon
+
+Evening
+
+Upload Section
+Upload Resume / CV (file upload, required)
+
+Allowed: PDF, DOC
+
+Upload Passport Size Photo (file upload, required)
+
+Allowed: JPG, PNG
+
+Final Commitment
+I agree to participate in final project & presentation (checkbox, required)
+
+Yes
+
+Declaration
+Declaration Confirmation (checkbox, required)
+
+I confirm all details are correct
+
+Form behavior requirements
+Use a clean single-column form layout
+
+Show section headings clearly
+
+Add required indicators
+
+Add inline validation messages
+
+Show file upload boxes with drag-and-drop style UI
+
+On successful submission, show a polished confirmation message
+
+Save every registration in the database
+
+Give each registration a unique ID automatically
+
+Save submission date and time automatically
+
+3. Registration storage
+All registrations must be saved and visible in the admin panel. The system should store:
+
+All form field values
+
+Resume file path or uploaded file reference
+
+Photo file path or uploaded file reference
+
+Unique registration number
+
+Submission timestamp
+
+Contact status field
+
+Notes field for admin
+
+4. Admin login
+Create an admin login page.
+
+Admin credentials:
+
+Username: admin
+
+Password: admin123
+
+After login, open the admin panel dashboard.
+
+5. Admin dashboard
+Create a professional admin panel for managing all registrations.
+
+Dashboard features:
+
+Show total registrations count
+
+Show recent applications
+
+Search by name, phone, email, college
+
+Filter by degree, year of study, time slot, business interest, attendance availability
+
+Table view of all applicants
+
+Open applicant details in a side panel or modal
+
+Download uploaded resume
+
+View uploaded photo
+
+Show registration number
+
+Show submission timestamp
+
+Add status tags such as:
+
+New
+
+Contacted
+
+Selected
+
+Rejected
+
+6. Phone call feature
+In the admin panel, every registration row must show a phone icon.
+When the admin clicks the phone icon, it should call the applicant using a proper clickable phone link in tel: format, because click-to-call links work best when the href uses the number with country code.
+
+Requirements:
+
+Show a phone icon button beside the mobile number
+
+Use click-to-call link
+
+Use clean international number format in the link
+
+Example behavior:
+
+visible text: +91 98765 43210
+
+link format: tel:+919876543210
+
+7. Export feature
+Add export options in admin panel:
+
+Export all registrations to CSV
+
+Export filtered registrations to CSV
+
+Include UTF-8 friendly export
+
+Include timestamp in export filename
+
+Export all main form fields and registration number
+
+CSV export for registration dashboards is a common and useful admin pattern.
+
+8. Admin notes and actions
+For each applicant, admin should be able to:
+
+Update status
+
+Add notes
+
+Mark as contacted
+
+Click phone icon to call
+
+Export data
+
+9. UI expectations
+Landing page should be elegant and attractive
+
+Form should be easy to complete on mobile
+
+Admin panel should look clean and professional
+
+Use cards, tables, modals, badges, and polished buttons
+
+Use #C40233 for primary buttons, highlights, active tabs, and badges
+
+Use white backgrounds with subtle gray borders and soft shadows
+
+Keep accessibility and readability strong
+
+10. Technical expectations
+Build the project as a complete full-stack-ready app or a realistic frontend with backend-ready structure.
+
+Preferred stack:
+
+Frontend: React or clean HTML/CSS/JS
+
+Backend: Node.js/Express or any simple backend
+
+Database: any simple database or JSON/mock storage if backend is not fully implemented
+
+File uploads must be supported
+
+Admin authentication must be included
+
+Export function must work
+
+Use modular, clean code structure
+
+11. Extra requirements
+Add a dashboard summary section
+
+Add logout button in admin panel
+
+Add empty state if no registrations exist
+
+Add responsive mobile view for admin dashboard
+
+Add polished success, loading, and error states
+
+Add confirmation before logout
+
+Add secure structure for admin credentials placeholder
+
+Do not use Google Forms embed; build a custom form UI with database/admin flow instead, because file-upload forms in Google Forms require respondent sign-in and store files in Google Drive.
+
+Final output
+Generate a complete attractive internship registration application with:
+
+landing page
+
+registration form
+
+admin login
+
+admin dashboard
+
+phone-call icon action
+
+file uploads
+
+registration storage
+
+export to CSV
+
+white and #C40233 theme
+
+polished responsive design
+
+Better version
