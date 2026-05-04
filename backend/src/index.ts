@@ -12,8 +12,6 @@ if (Number.isNaN(port) || port <= 0) {
 
 const mongodbUri = process.env["MONGODB_URI"];
 
-logger.info(`Checking MONGODB_URI: ${mongodbUri ? "Exists" : "Missing"}`);
-
 if (!mongodbUri) {
   throw new Error("MONGODB_URI environment variable is required");
 }
