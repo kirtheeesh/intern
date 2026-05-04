@@ -5,6 +5,7 @@ import * as z from "zod";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { UploadCloud, CheckCircle2, FileText, ImageIcon, Loader2 } from "lucide-react";
+import { CheckCircle2, FileText, ImageIcon, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -491,7 +492,7 @@ export default function Register() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <FormLabel>Resume / CV <span className="text-destructive">*</span></FormLabel>
+                      <Label className="text-sm font-medium">Resume / CV <span className="text-destructive">*</span></Label>
                       <div className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-slate-50 transition-colors relative cursor-pointer">
                         <input 
                           type="file" 
@@ -520,7 +521,7 @@ export default function Register() {
                     </div>
 
                     <div className="space-y-3">
-                      <FormLabel>Passport Size Photo <span className="text-destructive">*</span></FormLabel>
+                      <Label className="text-sm font-medium">Passport Size Photo <span className="text-destructive">*</span></Label>
                       <div className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-slate-50 transition-colors relative cursor-pointer">
                         <input 
                           type="file" 
