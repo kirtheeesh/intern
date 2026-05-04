@@ -2,15 +2,14 @@ import { Router, type IRouter } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { eq, ilike, or, and, like, SQL } from "drizzle-orm";
-import { db, registrationsTable } from "@workspace/db";
+import Registration from "../models/Registration";
 import {
   CreateRegistrationBody,
   UpdateRegistrationBody,
   UpdateRegistrationParams,
   GetRegistrationParams,
   ListRegistrationsQueryParams,
-} from "@workspace/api-zod";
+} from "../validations/api";
 import { isValidToken, COOKIE_NAME } from "./admin";
 
 const uploadsDir = path.resolve(process.cwd(), "uploads");
@@ -57,9 +56,11 @@ function generateRegNumber(): string {
 }
 
 function formatRegistration(r: any) {
+  const doc = r.toObject ? r.toObject() : r;
   return {
-    ...r,
-    submittedAt: r.submittedAt instanceof Date ? r.submittedAt.toISOString() : r.submittedAt,
+    ...doc,
+    id: doc._id.toString(),
+    submittedAt: doc.submittedAt instanceof Date ? doc.submittedAt.toISOString() : doc.submittedAt,
   };
 }
 
@@ -75,27 +76,22 @@ router.get("/registrations", requireAdmin, async (req, res): Promise<void> => {
 
   const { search, degree, yearOfStudy, timeSlot, status } = params.data as any;
 
-  const conditions: SQL[] = [];
+  const query: any = {};
 
   if (search) {
-    conditions.push(
-      or(
-        ilike(registrationsTable.fullName, `%${search}%`),
-        ilike(registrationsTable.mobileNumber, `%${search}%`),
-        ilike(registrationsTable.emailId, `%${search}%`),
-        ilike(registrationsTable.college as any, `%${search}%`),
-      ) as SQL,
-    );
+    query.$or = [
+      { fullName: { $regex: search, $options: "i" } },
+      { mobileNumber: { $regex: search, $options: "i" } },
+      { emailId: { $regex: search, $options: "i" } },
+      { college: { $regex: search, $options: "i" } },
+    ];
   }
-  if (degree) conditions.push(eq(registrationsTable.degree as any, degree));
-  if (yearOfStudy) conditions.push(eq(registrationsTable.yearOfStudy as any, yearOfStudy));
-  if (timeSlot) conditions.push(eq(registrationsTable.preferredTimeSlot as any, timeSlot));
-  if (status) conditions.push(eq(registrationsTable.status, status));
+  if (degree) query.degree = degree;
+  if (yearOfStudy) query.yearOfStudy = yearOfStudy;
+  if (timeSlot) query.preferredTimeSlot = timeSlot;
+  if (status) query.status = status;
 
-  const rows =
-    conditions.length > 0
-      ? await db.select().from(registrationsTable).where(and(...conditions)).orderBy(registrationsTable.submittedAt)
-      : await db.select().from(registrationsTable).orderBy(registrationsTable.submittedAt);
+  const rows = await Registration.find(query).sort({ submittedAt: 1 });
 
   res.json(rows.map(formatRegistration));
 });
@@ -120,16 +116,15 @@ router.post(
 
     const registrationNumber = generateRegNumber();
 
-    const [registration] = await db
-      .insert(registrationsTable)
-      .values({
-        ...parsed.data,
-        registrationNumber,
-        resumePath,
-        photoPath,
-        status: "new",
-      })
-      .returning();
+    const registration = new Registration({
+      ...parsed.data,
+      registrationNumber,
+      resumePath,
+      photoPath,
+      status: "new",
+    });
+
+    await registration.save();
 
     res.status(201).json(formatRegistration(registration));
   },
@@ -137,7 +132,7 @@ router.post(
 
 // Stats (admin only)
 router.get("/registrations/stats", requireAdmin, async (req, res): Promise<void> => {
-  const all = await db.select().from(registrationsTable).orderBy(registrationsTable.submittedAt);
+  const all = await Registration.find().sort({ submittedAt: 1 });
 
   const total = all.length;
   const newCount = all.filter((r) => r.status === "new").length;
@@ -175,20 +170,17 @@ router.get("/registrations/stats", requireAdmin, async (req, res): Promise<void>
 router.get("/registrations/export", requireAdmin, async (req, res): Promise<void> => {
   const { search, status } = req.query as { search?: string; status?: string };
 
-  let rows = await db.select().from(registrationsTable).orderBy(registrationsTable.submittedAt);
-
+  const query: any = {};
   if (search) {
-    const s = search.toLowerCase();
-    rows = rows.filter(
-      (r) =>
-        r.fullName.toLowerCase().includes(s) ||
-        r.emailId.toLowerCase().includes(s) ||
-        r.mobileNumber.includes(s),
-    );
+    query.$or = [
+      { fullName: { $regex: search, $options: "i" } },
+      { emailId: { $regex: search, $options: "i" } },
+      { mobileNumber: { $regex: search, $options: "i" } },
+    ];
   }
-  if (status) {
-    rows = rows.filter((r) => r.status === status);
-  }
+  if (status) query.status = status;
+
+  const rows = await Registration.find(query).sort({ submittedAt: 1 });
 
   const headers = [
     "Registration Number",
@@ -216,7 +208,7 @@ router.get("/registrations/export", requireAdmin, async (req, res): Promise<void
     "Submitted At",
   ];
 
-  const escape = (val: string | null | undefined) => {
+  const escape = (val: any) => {
     if (val == null) return "";
     const str = String(val).replace(/"/g, '""');
     return `"${str}"`;
@@ -224,7 +216,7 @@ router.get("/registrations/export", requireAdmin, async (req, res): Promise<void
 
   const csvRows = [
     headers.map(escape).join(","),
-    ...rows.map((r) =>
+    ...rows.map((r: any) =>
       [
         r.registrationNumber,
         r.fullName,
@@ -272,17 +264,16 @@ router.get("/registrations/:id", requireAdmin, async (req, res): Promise<void> =
     return;
   }
 
-  const [registration] = await db
-    .select()
-    .from(registrationsTable)
-    .where(eq(registrationsTable.id, params.data.id));
-
-  if (!registration) {
-    res.status(404).json({ error: "Registration not found" });
-    return;
+  try {
+    const registration = await Registration.findById(params.data.id);
+    if (!registration) {
+      res.status(404).json({ error: "Registration not found" });
+      return;
+    }
+    res.json(formatRegistration(registration));
+  } catch (err) {
+    res.status(400).json({ error: "Invalid ID format" });
   }
-
-  res.json(formatRegistration(registration));
 });
 
 // Update registration (admin only)
@@ -299,23 +290,27 @@ router.patch("/registrations/:id", requireAdmin, async (req, res): Promise<void>
     return;
   }
 
-  const updateData: Record<string, string | null> = {};
-  if (body.data.status != null) updateData["status"] = body.data.status;
-  if (body.data.contactStatus != null) updateData["contactStatus"] = body.data.contactStatus;
-  if (body.data.notes != null) updateData["notes"] = body.data.notes;
+  const updateData: any = {};
+  if (body.data.status != null) updateData.status = body.data.status;
+  if (body.data.contactStatus != null) updateData.contactStatus = body.data.contactStatus;
+  if (body.data.notes != null) updateData.notes = body.data.notes;
 
-  const [updated] = await db
-    .update(registrationsTable)
-    .set(updateData)
-    .where(eq(registrationsTable.id, params.data.id))
-    .returning();
+  try {
+    const updated = await Registration.findByIdAndUpdate(
+      params.data.id,
+      { $set: updateData },
+      { new: true }
+    );
 
-  if (!updated) {
-    res.status(404).json({ error: "Registration not found" });
-    return;
+    if (!updated) {
+      res.status(404).json({ error: "Registration not found" });
+      return;
+    }
+
+    res.json(formatRegistration(updated));
+  } catch (err) {
+    res.status(400).json({ error: "Invalid ID format" });
   }
-
-  res.json(formatRegistration(updated));
 });
 
 export default router;

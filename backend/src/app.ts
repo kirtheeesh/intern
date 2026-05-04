@@ -3,6 +3,7 @@ import cors from "cors";
 import pinoHttp from "pino-http";
 import cookieParser from "cookie-parser";
 import path from "path";
+import fs from "fs";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -37,5 +38,16 @@ const uploadsDir = path.resolve(process.cwd(), "uploads");
 app.use("/api/uploads", express.static(uploadsDir));
 
 app.use("/api", router);
+
+// Serve frontend static files in production
+const frontendDist = path.resolve(process.cwd(), "../frontend/dist");
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get("*", (req, res) => {
+    if (!req.path.startsWith("/api")) {
+      res.sendFile(path.join(frontendDist, "index.html"));
+    }
+  });
+}
 
 export default app;

@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { AdminLoginBody } from "@workspace/api-zod";
+import { AdminLoginBody } from "../validations/api";
 
 const router: IRouter = Router();
 
