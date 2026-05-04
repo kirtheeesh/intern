@@ -8,7 +8,7 @@ import {
   useAdminMe,
   getGetRegistrationStatsQueryKey,
   getListRegistrationsQueryKey
-} from "@workspace/api-client-react";
+} from "../api";
 import { useQueryClient } from "@tanstack/react-query";
 import { 
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
