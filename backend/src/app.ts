@@ -34,14 +34,31 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Serve uploaded files
-const uploadsDir = path.resolve(process.cwd(), "uploads");
+const uploadsDir = process.env["UPLOADS_PATH"] || path.resolve(process.cwd(), "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+logger.info({ uploadsDir }, "Serving uploads from");
 app.use("/api/uploads", express.static(uploadsDir));
 
 app.use("/api", router);
 
 // Serve frontend static files in production
-const frontendDist = path.resolve(process.cwd(), "../frontend/dist");
-if (fs.existsSync(frontendDist)) {
+const possibleFrontendPaths = [
+  path.resolve(process.cwd(), "../frontend/dist"),
+  path.resolve(process.cwd(), "frontend/dist"),
+  path.resolve(process.cwd(), "dist/frontend"),
+];
+
+let frontendDist = "";
+for (const p of possibleFrontendPaths) {
+  if (fs.existsSync(p)) {
+    frontendDist = p;
+    break;
+  }
+}
+
+if (frontendDist) {
   app.use(express.static(frontendDist));
   app.use((req, res) => {
     if (req.method === "GET" && !req.path.startsWith("/api")) {

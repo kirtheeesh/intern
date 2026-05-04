@@ -52,6 +52,18 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const fieldLabels: Record<string, string> = {
+  fullName: "Full Name",
+  dateOfBirth: "Date of Birth",
+  gender: "Gender",
+  mobileNumber: "Mobile Number",
+  emailId: "Email Address",
+  whyJoin: "Why Join",
+  canAttendAll: "Availability",
+  agreeToProject: "Project Agreement",
+  declarationConfirmed: "Declaration Confirmation",
+};
+
 export default function Register() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -79,6 +91,17 @@ export default function Register() {
       declarationConfirmed: false,
     },
   });
+
+  const onInvalid = (errors: any) => {
+    const errorFields = Object.keys(errors).map(key => fieldLabels[key] || key);
+    if (errorFields.length > 0) {
+      toast({
+        title: "Required fields missing",
+        description: `Please fill in the following fields: ${errorFields.join(", ")}`,
+        variant: "destructive",
+      });
+    }
+  };
 
   const onSubmit = async (data: FormValues) => {
     if (!resumeFile) {
@@ -165,7 +188,7 @@ export default function Register() {
         <Card className="border-border shadow-lg">
           <CardContent className="p-6 sm:p-10">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+              <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-12">
                 
                 {/* 1. Personal Information */}
                 <section>

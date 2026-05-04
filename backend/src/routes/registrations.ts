@@ -12,7 +12,7 @@ import {
 } from "../validations/api";
 import { isValidToken, COOKIE_NAME } from "./admin";
 
-const uploadsDir = path.resolve(process.cwd(), "uploads");
+const uploadsDir = process.env["UPLOADS_PATH"] || path.resolve(process.cwd(), "uploads");
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
